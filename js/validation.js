@@ -7,6 +7,8 @@ btnSubmit.addEventListener("click", function(e){
    if(!isEmail("email")) e.preventDefault();
    if(!isCheck("gender")) e.preventDefault();
    if(!isCheck("hobby")) e.preventDefault();
+   if(!isSelect("edu")) e.preventDefault();
+   if(!isPwd("pwd1", "pwd2", 5)) e.preventDefault();
 });
 
 //text 인증함수
@@ -70,8 +72,60 @@ function isCheck(name){
 
       var errMsg = document.createElement("p");
       errMsg.append("필수 입력사항을 체크하세요");
-      inputs[0].closest("td").append(errMsg);
+      inputs[0].closest("td").append(errMsg); //closest 앞에 요소를 배열로 받음
       return false;
    }
+}
 
+//select 인증함수
+function isSelect(name){
+   var sel = form.querySelector(`[name=${name}]`);
+   var sel_index = sel.options.selectedIndex; 
+   var val = sel.options[sel_index].value; 
+   //var val =sel.value;
+
+   if(val !==""){
+      var errMsgs = sel.closest("td").querySelectorAll("p");
+      if(errMsgs.length >0) sel.closest("td").querySelector("p").remove();
+
+      return true;
+   }else{
+      var errMsgs = sel.closest("td").querySelectorAll("p");
+      if(errMsgs.length >0) sel.closest("td").querySelector("p").remove();
+
+      var errMsg = document.createElement("p");
+      errMsg.append("필수 항목을 선택하세요");
+      sel.closest("td").append(errMsg);
+
+      return false;
+   }
+}
+
+//비밀번호 인증함수
+function isPwd(name1, name2, len){
+   var pwd1 = form.querySelector(`[name${name1}]`);
+   var pwd2 = form.querySelector(`[name${name2}]`);
+
+   var pwd1_val = pwd1.value;
+   var pwd2_val = pwd2.value;
+
+   var eng = /[a-zA-Z]/;
+   var num = /[0-9]/;
+   var spc = /[~!@#$%^&*()_+`-]/;
+
+   if(pwd1_val === pwd2_val && pwd1.length> len && eng.test(pwd1_val) && num.test(pwd1_val) && spc.test(pwd1_val)){
+      var errMsgs = pwd1.closest("td").querySelectorAll("p");
+      if(errMsgs.length >0) pwd1.closest("td").querySelector("p").remove();
+
+      return true;
+   }else{
+      var errMsgs = pwd1.closest("td").querySelectorAll("p");
+      if(errMsgs.length >0) pwd1.closest("td").querySelector("p").remove();
+
+      var errMsg = document.createElement("p");
+      errMsg.append(`비밀번호를 ${len}글자 이상, 영문, 숫자, 특수문자 모두 포함해서 동일하게 입력하세요`);
+      pwd1.closest("td").append(errMsg);
+
+      return false;
+   }
 }
